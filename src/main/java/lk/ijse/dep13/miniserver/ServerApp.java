@@ -3,6 +3,7 @@ package lk.ijse.dep13.miniserver;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 
@@ -51,6 +52,24 @@ public class ServerApp {
                             path = Path.of("http",host, resourcePath.substring(1));
                         }
 
+                        if(!Files.exists(path)){
+                            sendErrorResponse(os, 404, "Not Found", "The requested resource does not exist");
+                        }else {
+                            String contentType = Files.probeContentType(path);
+
+                            String httpResponseHeader = """
+                                    HTTP/1.1 200 OK
+                                    Server: mini-server
+                                    Date: %s
+                                    Content-Type: %s
+                                    Connection: close
+                                    """.formatted(LocalDateTime.now(),contentType);
+                            os.write(httpResponseHeader.getBytes());
+                            os.write("\r\n".getBytes());
+                            os.flush();
+
+
+                        }
 
                     }
 
