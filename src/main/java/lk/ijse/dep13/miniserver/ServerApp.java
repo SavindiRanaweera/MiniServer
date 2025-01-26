@@ -3,6 +3,8 @@ package lk.ijse.dep13.miniserver;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -68,12 +70,18 @@ public class ServerApp {
                             os.write("\r\n".getBytes());
                             os.flush();
 
-
+                            //Send File Content
+                            try (FileChannel fc = FileChannel.open(path)) {
+                                ByteBuffer buffer = ByteBuffer.allocate(1024);
+                                while (fc.read(buffer) != -1) {
+                                    buffer.flip();
+                                    os.write(buffer.array(), 0, buffer.remaining());
+                                    buffer.clear();
+                                }
+                            }
                         }
-
                     }
-
-
+                    localSocket.close();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
