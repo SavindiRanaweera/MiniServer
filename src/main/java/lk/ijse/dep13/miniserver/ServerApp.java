@@ -1,11 +1,9 @@
 package lk.ijse.dep13.miniserver;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
 
 public class ServerApp {
     public static void main(String[] args) throws IOException {
@@ -39,11 +37,32 @@ public class ServerApp {
                         }
                     }
 
+                    OutputStream os = localSocket.getOutputStream();
+                    if(!cmd.equalsIgnoreCase("GET")){
+
+                    }else if(host == null){
+
+                    }
+
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            });
+            }).start();
         }
+    }
+
+    private static void sendErrorResponse(OutputStream os, int statusCode, String statusMessage, String body) throws IOException {
+        String httpResponse = """
+                                HTTP/1.1 405 Method Not Allowed
+                                Server: mini-server
+                                Date: %s
+                                Content-Type: text/html
+                                Connection: close
+                                """.formatted(LocalDateTime.now());
+        os.write(httpResponse.getBytes());
+        os.write("\r\n".getBytes());
+        os.write(body.getBytes());
+        os.flush();
     }
 }
