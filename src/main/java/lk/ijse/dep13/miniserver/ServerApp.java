@@ -39,8 +39,10 @@ public class ServerApp {
 
                     OutputStream os = localSocket.getOutputStream();
                     if(!cmd.equalsIgnoreCase("GET")){
-
+                        sendErrorResponse(os, 405, "Method Not Allowed", "Bad Request");
                     }else if(host == null){
+                        sendErrorResponse(os, 400, "Bad Request", "Host header is missing");
+                    }else {
 
                     }
 
