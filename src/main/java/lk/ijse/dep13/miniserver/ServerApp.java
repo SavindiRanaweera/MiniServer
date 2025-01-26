@@ -54,12 +54,12 @@ public class ServerApp {
 
     private static void sendErrorResponse(OutputStream os, int statusCode, String statusMessage, String body) throws IOException {
         String httpResponse = """
-                                HTTP/1.1 405 Method Not Allowed
+                                HTTP/1.1 %d %s
                                 Server: mini-server
                                 Date: %s
                                 Content-Type: text/html
                                 Connection: close
-                                """.formatted(LocalDateTime.now());
+                                """.formatted(statusCode, statusMessage, LocalDateTime.now());
         os.write(httpResponse.getBytes());
         os.write("\r\n".getBytes());
         os.write(body.getBytes());
