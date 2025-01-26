@@ -3,6 +3,7 @@ package lk.ijse.dep13.miniserver;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 
 public class ServerApp {
@@ -43,6 +44,13 @@ public class ServerApp {
                     }else if(host == null){
                         sendErrorResponse(os, 400, "Bad Request", "Host header is missing");
                     }else {
+                        Path path;
+                        if(resourcePath.equals("/")){
+                            path = Path.of("http",host, "index.html");
+                        }else {
+                            path = Path.of("http",host, resourcePath.substring(1));
+                        }
+
 
                     }
 
